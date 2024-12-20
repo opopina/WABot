@@ -1,4 +1,18 @@
+# Dependencies
 node_modules/
+package-lock.json
+
+# Environment
 .env
+
+# WhatsApp session files
 .wwebjs_auth/
-package-lock.json 
+.wwebjs_cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db 

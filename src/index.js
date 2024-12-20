@@ -32,27 +32,41 @@ client.on('ready', () => {
 
 // Manejar mensajes entrantes
 client.on('message', async msg => {
-    console.log('Mensaje recibido:', {
-        body: msg.body,
-        from: msg.from,
-        timestamp: msg.timestamp
+    console.log('=== Nuevo Mensaje ===');
+    console.log({
+        tipo: msg.type,
+        origen: msg.from,
+        esGrupo: msg.isGroup,
+        nombre: msg._data.notifyName,
+        cuerpo: msg.body,
+        hora: new Date(msg.timestamp * 1000).toLocaleString()
     });
     
+    // Ignorar mensajes de estados/historias
+    if (msg.from === 'status@broadcast') {
+        console.log('❌ Mensaje ignorado: Es un estado/historia');
+        return;
+    }
+
     try {
         await axios.post(`${process.env.N8N_WEBHOOK_URL}`, {
             message: msg.body,
             from: msg.from,
+            fromName: msg._data.notifyName,
             timestamp: msg.timestamp,
-            type: msg.type
+            type: msg.type,
+            isGroup: msg.isGroup
         }, {
             headers: {
                 'Authorization': `Bearer ${process.env.SECURITY_TOKEN}`
             }
         });
-        console.log('Mensaje enviado a n8n exitosamente');
+        console.log('✅ Mensaje enviado a n8n exitosamente');
     } catch (error) {
-        console.error('Error al enviar mensaje a n8n:', error.message);
+        console.error('❌ Error al enviar mensaje a n8n:', error.message);
     }
+    
+    console.log('==================\n');
 });
 
 // Endpoint para recibir mensajes desde n8n (múltiples rutas)
