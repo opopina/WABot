@@ -12,10 +12,17 @@ app.use(express.json());
 const client = new Client({
     authStrategy: new LocalAuth({
         clientId: "whatsapp-bot",
-        dataPath: "/root/WaAPI/.wwebjs_auth"
+        dataPath: "./wwebjs_auth"
     }),
     puppeteer: {
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--single-process',
+            '--no-zygote'
+        ],
+        headless: true,
         executablePath: '/usr/bin/chromium-browser'
     }
 });
